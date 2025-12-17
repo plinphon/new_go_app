@@ -13,17 +13,17 @@ pipeline {
             steps {
                 withKubeConfig([credentialsId: env.K8S_CREDENTIALS_ID, serverUrl: env.K8S_SERVER]) {
                     sh '''#!/bin/bash
-                        kubectl apply -f - <<EOF
-                        apiVersion: v1
-                        kind: Pod
-                        metadata:
-                        name: ${POD_NAME}
-                        spec:
-                        containers:
-                        - name: ${POD_NAME}
-                            image: ${IMAGE}
-                        EOF
-                        '''
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: '${POD_NAME}'
+spec:
+  containers:
+  - name: '${POD_NAME}'
+    image: '${IMAGE}'
+EOF
+'''
                 }
             }
         }
