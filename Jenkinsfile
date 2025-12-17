@@ -2,28 +2,23 @@ pipeline {
     agent any
 
     environment {
-        K8S_SERVER = 'https://kubernetes:6443'
-        K8S_CREDENTIALS_ID = 'k8s-token'
-        POD_NAME = 'myapp'
-        IMAGE = 'nginx:latest'
+        EC2_USER = 'ec2-user'
+        EC2_HOST = '98.89.34.13'
+        DOCKER_IMAGE = 'plinphonpat/myapp:latest'
+        SSH_CREDENTIALS = 'ec2-ssh-key'
     }
 
     stages {
-        stage('Deploy to Kubernetes') {
+        stage('Deploy to EC2') {
             steps {
-                withKubeConfig([credentialsId: env.K8S_CREDENTIALS_ID, serverUrl: env.K8S_SERVER]) {
-                    sh '''#!/bin/bash
-kubectl apply -f - <<EOF
-apiVersion: v1
-kind: Pod
-metadata:
-  name: '${POD_NAME}'
-spec:
-  containers:
-  - name: '${POD_NAME}'
-    image: '${IMAGE}'
-EOF
-'''
+                sshagent (credentials: [env.SSH_CREDENTIALS]) {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} \\
+                        'docker pull ${DOCKER_IMAGE} && \\
+                         docker stop myapp || true && \\
+                         docker rm myapp || true && \\
+                         docker run -d -p 4444:4444 --name myapp ${DOCKER_IMAGE}'
+                    """
                 }
             }
         }
