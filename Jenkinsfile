@@ -5,7 +5,7 @@ pipeline {
         K8S_SERVER = 'https://kubernetes:6443'
         K8S_CREDENTIALS_ID = 'k8s-token'
         POD_NAME = 'myapp'
-        IMAGE = 'ttl.sh/myapp:1h'
+        IMAGE = 'nginx:latest'
     }
 
     stages {
