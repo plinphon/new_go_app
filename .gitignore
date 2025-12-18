@@ -1,0 +1,15 @@
+# Go build
+myapp
+*.exe
+*.out
+
+# Secrets
+*.pem
+*.key
+*.env
+
+# Docker / temp
+*.log
+
+# OS
+.DS_Store
